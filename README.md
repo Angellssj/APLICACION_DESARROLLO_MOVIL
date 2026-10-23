@@ -64,6 +64,7 @@ Esta separación facilita la comprensión y el mantenimiento del código.
 **Equipo de desarrollo:**
 
 - Ángel González
+- Andrés Albornoz
 - Roselín Verdu
 
 **Institución:** Duoc UC  
