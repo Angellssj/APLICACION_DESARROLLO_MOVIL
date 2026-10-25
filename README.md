@@ -1,89 +1,66 @@
-# 📱 WIM 100 – Aplicación de Evaluación de Candidatas
+# 📱 WIM 100 — Aplicación de Evaluación de Candidatas
 
-## 📌 Descripción del proyecto
+**Duoc UC · DSY1105 · Desarrollo de Aplicaciones Móviles**
 
-WIM 100 es un proyecto académico desarrollado para la asignatura **Desarrollo de Aplicaciones Móviles (DSY1105)** de Duoc UC.
+Proyecto académico de **Ángel González, Roselín Verdu y Andrés Albornoz**. La aplicación permite gestionar candidatas ficticias para un programa de selección, con interfaz en **Kotlin, Jetpack Compose y Material Design 3**.
 
-La aplicación busca facilitar el registro, evaluación y seguimiento de candidatas de un programa de selección, mediante una interfaz móvil sencilla, organizada e intuitiva.
+> **Estado: versión inicial 0.1.0.** Es un primer incremento funcional para el primer commit del equipo, **no** la versión final de las evaluaciones EP2/EP3. Toda la información de prueba es ficticia.
 
-El objetivo es aplicar los conocimientos adquiridos durante el semestre, priorizando la funcionalidad, la facilidad de uso y la organización del código.
+## ✅ Funciones de esta versión (primer commit)
 
-## 🎯 Objetivo general
+- Inicio de sesión **demostrativo** con nombre y selección de rol (Evaluadora o Dirección; sin autenticación real).
+- Listado de candidatas; opción para agregar y abrir el detalle.
+- Formulario: nombre y apellido, correo, área y años de experiencia.
+- Validación de campos y mensajes visibles; bloqueo de correos duplicados.
+- **Persistencia local** mediante `SharedPreferences` + JSON: los registros permanecen al cerrar y volver a abrir.
+- Recurso nativo: selector de PDF del sistema Android para adjuntar CV; opción de abrirlo con otra aplicación.
+- Animación sencilla de transición entre pantallas mediante `Crossfade`.
+- Gestión de estado con `StateFlow` en un `ViewModel`.
+- Pruebas unitarias de las reglas del formulario.
 
-Desarrollar una aplicación móvil Android que permita gestionar candidaturas y evaluaciones, utilizando Kotlin, Jetpack Compose y almacenamiento local.
+## 🛠 Tecnologías
 
-## 🚀 Funcionalidades del proyecto
+Kotlin · Jetpack Compose · Material 3 · MVVM básico · StateFlow · SharedPreferences · Gradle · Git/GitHub · Trello.
 
-- Registro y consulta de candidatas.
-- Formularios con validación de datos.
-- Navegación entre las diferentes pantallas.
-- Evaluación de candidatas mediante puntajes.
-- Visualización de resultados.
-- Gestión de información mediante almacenamiento local.
-- Perfiles de Evaluadora y Dirección.
-- Integración de recursos nativos del dispositivo.
-- Interfaz diseñada con Material Design 3.
+**Pendiente para siguientes commits:** migración a Room, evaluación por criterios, ranking, historial, más pruebas y mejoras de diseño. **No afirmamos** que esas funciones estén ya implementadas.
 
-**Estado:** proyecto académico en desarrollo y validación funcional.
+## ▶️ Ejecutar en Android Studio / IntelliJ IDEA con soporte Android
 
-## 🛠️ Tecnologías del proyecto
+1. Clona el repositorio o descomprime el ZIP.
+2. Abre en el IDE la **carpeta raíz que contiene `settings.gradle.kts` y `gradlew.bat`**, no la subcarpeta `app`.
+3. Instala JDK 21 y el Android SDK solicitado por Gradle (versión 36.1 según configuración original del equipo).
+4. Haz **Sync Project with Gradle Files** con conexión a internet en la primera sincronización.
+5. Inicia un emulador (Android API 26+ recomendado) o conecta un dispositivo con depuración USB.
+6. Selecciona **app**, presiona **Run**.
+7. En Windows, para las pruebas unitarias: `gradlew.bat testDebugUnitTest`.
 
-| Tecnología | Utilidad |
-|---|---|
-| Kotlin | Lenguaje de programación |
-| Jetpack Compose | Desarrollo de interfaces |
-| Material Design 3 | Diseño visual |
-| MVVM | Organización de la aplicación |
-| Room / SQLite | Almacenamiento local |
-| Gradle | Gestión de dependencias |
-| Git y GitHub | Control de versiones |
-| Trello | Organización de tareas |
+## 🧪 Prueba manual del primer incremento
 
-## 🏗️ Arquitectura
+1. Ingresa con el nombre `Ángel González` y rol Evaluadora.
+2. En **Registrar candidata**, prueba primero guardar con campos vacíos: aparecerán mensajes de error.
+3. Registra: `Camila Torres`, `camila@ejemplo.cl`, `Desarrollo`, `2`.
+4. Selecciona opcionalmente un PDF del teléfono y guarda.
+5. Abre el detalle de Camila y comprueba sus datos (y el PDF si se adjuntó).
+6. Cierra la app y vuelve a abrir: el registro debe continuar en el listado.
+7. Repite el mismo correo: el registro duplicado debe rechazarse.
 
-El proyecto está organizado siguiendo los principios del patrón MVVM.
+## 🗂 Estructura del código
 
-- **Model:** representa los datos de la aplicación.
-- **View:** contiene las pantallas e interfaces.
-- **ViewModel:** administra los estados y la lógica de presentación.
-- **Repository:** organiza el acceso a los datos.
+```text
+app/src/main/java/com/example/myapplication/
+├── MainActivity.kt
+├── model/Candidata.kt                   # Modelo
+├── validation/CandidataValidator.kt    # Reglas puras
+├── data/CandidataRepository.kt         # Guardar y recuperar datos locales
+├── ui/viewmodel/WimViewModel.kt        # Estado y coordinación
+├── ui/WimApp.kt                        # Pantallas y navegación simple
+└── ui/theme/                            # Material 3
+```
 
-Esta separación facilita la comprensión y el mantenimiento del código.
+## 👥 Equipo y seguimiento
 
-## 💻 Cómo ejecutar el proyecto
+**Integrantes:** Ángel González · Roselín Verdu · Andrés Albornoz. Cada historia posterior debe tener asignado un responsable real, un commit identificable, evidencia de pruebas y una tarjeta Trello.
 
-1. Descargar o clonar este repositorio.
-2. Abrir la carpeta del proyecto Android en Android Studio o en IntelliJ IDEA con soporte Android configurado.
-3. Configurar el Android SDK.
-4. Sincronizar las dependencias mediante Gradle.
-5. Seleccionar un emulador Android o conectar un dispositivo físico.
-6. Ejecutar el módulo `app`.
+Consulta [`docs/PRIMER_COMMIT.md`](docs/PRIMER_COMMIT.md) para subir esta versión sin sobrescribir el trabajo de otros, y [`docs/TRELLO_SECUENCIA.md`](docs/TRELLO_SECUENCIA.md) para los siguientes incrementos.
 
-## 👥 Integrantes
-
-**Equipo de desarrollo:**
-
-- Ángel González
-- Andrés Albornoz
-- Roselín Verdú
-
-**Institución:** Duoc UC  
-**Asignatura:** Desarrollo de Aplicaciones Móviles  
-**Código:** DSY1105
-
-## 📚 Contexto académico
-
-El proyecto forma parte de las evaluaciones parciales del semestre y constituye un avance para la Evaluación Final Transversal (EFT).
-
-Se busca demostrar conocimientos en diseño visual, programación Kotlin, navegación, gestión de estados, persistencia local y recursos nativos.
-
-## 📈 Mejoras futuras
-
-- Fortalecer las pruebas funcionales.
-- Mejorar las animaciones y la experiencia visual.
-- Optimizar las validaciones.
-- Incorporar las observaciones recibidas durante la defensa.
-
----
-
-**Proyecto académico desarrollado con fines educativos – Duoc UC, 2026.**
+**Nota:** antes de calificar el proyecto como operativo para la defensa, es indispensable compilarlo y ejecutarlo en Android Studio; esta entrega no incluye un APK certificado ni pruebas instrumentadas en emulador.
