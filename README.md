@@ -65,7 +65,7 @@ Esta separación facilita la comprensión y el mantenimiento del código.
 
 - Ángel González
 - Andrés Albornoz
-- Roselín Verdu
+- Roselín Verdú
 
 **Institución:** Duoc UC  
 **Asignatura:** Desarrollo de Aplicaciones Móviles  
