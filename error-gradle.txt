@@ -1,0 +1,23 @@
+﻿.\gradlew.bat : 
+En línea: 1 Carácter: 1
++ .\gradlew.bat :app:assembleDebug --no-configuration-cache 2>&1 | Out- ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file 'C:\Users\Asus\Downloads\APLICACION_DESARROLLO_MOVIL\app\build.gradle.kts' line: 61
+
+* What went wrong:
+Build was configured to prefer settings repositories over project repositories but repository 'MavenRepo' was added by 
+build file 'app\build.gradle.kts'
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 4s

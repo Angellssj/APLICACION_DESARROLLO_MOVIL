@@ -50,7 +50,9 @@ import com.example.myapplication.ui.viewmodel.WimViewModel
 import com.example.myapplication.validation.CandidataValidator
 import kotlinx.coroutines.launch
 
-private enum class Pantalla { LOGIN, LISTADO, FORMULARIO, DETALLE }
+private enum class Pantalla {
+    LOGIN, LISTADO, FORMULARIO, DETALLE, RANKING
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +67,13 @@ fun WimApp(viewModel: WimViewModel) {
 
     fun regresar() {
         pantalla = when (pantalla) {
-            Pantalla.FORMULARIO, Pantalla.DETALLE -> Pantalla.LISTADO
+            Pantalla.FORMULARIO,
+            Pantalla.DETALLE,
+            Pantalla.RANKING -> RankingScreen(
+                candidatas = candidatas
+            )
+            Pantalla.RANKING -> Pantalla.LISTADO
+
             Pantalla.LISTADO -> Pantalla.LOGIN
             Pantalla.LOGIN -> Pantalla.LOGIN
         }
@@ -110,7 +118,8 @@ fun WimApp(viewModel: WimViewModel) {
                         onDetalle = { id ->
                             candidataId = id
                             pantalla = Pantalla.DETALLE
-                        }
+                        },
+                        onRanking = { pantalla = Pantalla.RANKING }
                     )
                     Pantalla.FORMULARIO -> FormularioScreen(
                         onGuardar = { nombre, correo, area, experiencia, cv ->
@@ -161,13 +170,23 @@ private fun LoginScreen(onEntrar: (String, String) -> Unit) {
 
 @Composable
 private fun ListadoScreen(
-    candidatas: List<Candidata>, usuario: String, rol: String,
-    onNueva: () -> Unit, onDetalle: (Long) -> Unit
+    candidatas: List<Candidata>,
+    usuario: String,
+    rol: String,
+    onNueva: () -> Unit,
+    onDetalle: (Long) -> Unit,
+    onRanking: () -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("Bienvenido/a, $usuario", style = MaterialTheme.typography.titleLarge)
         Text("Perfil: $rol | Registros: ${candidatas.size}")
         Button(onClick = onNueva, modifier = Modifier.fillMaxWidth()) { Text("+ Registrar candidata") }
+        OutlinedButton(
+            onClick = onRanking,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Ver resultados y ranking")
+        }
         HorizontalDivider()
         if (candidatas.isEmpty()) {
             Text("No hay candidatas. Crea la primera con el botón superior.")
