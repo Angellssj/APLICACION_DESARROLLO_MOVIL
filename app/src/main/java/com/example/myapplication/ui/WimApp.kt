@@ -1,8 +1,10 @@
 package com.example.myapplication.ui
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,9 +17,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -46,36 +51,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.model.Candidata
+import com.example.myapplication.model.Evaluacion
+import com.example.myapplication.model.Rol
 import com.example.myapplication.ui.viewmodel.WimViewModel
 import com.example.myapplication.validation.CandidataValidator
 import kotlinx.coroutines.launch
 
-private enum class Pantalla {
-    LOGIN, LISTADO, FORMULARIO, DETALLE, RANKING
-}
+private enum class Pantalla { LOGIN, LISTADO, FORMULARIO, DETALLE, EVALUACION, RANKING }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WimApp(viewModel: WimViewModel) {
     var pantalla by rememberSaveable { mutableStateOf(Pantalla.LOGIN) }
     var nombreSesion by rememberSaveable { mutableStateOf("") }
-    var rolSesion by rememberSaveable { mutableStateOf("Evaluadora") }
+    var rolSesion by rememberSaveable { mutableStateOf(Rol.EVALUADORA) }
     var candidataId by rememberSaveable { mutableStateOf(-1L) }
     val candidatas by viewModel.candidatas.collectAsState()
+    val evaluaciones by viewModel.evaluaciones.collectAsState()
+    val ranking by viewModel.ranking.collectAsState()
     val aviso = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    fun regresar() {
-        pantalla = when (pantalla) {
-            Pantalla.FORMULARIO,
-            Pantalla.DETALLE,
-            Pantalla.RANKING -> RankingScreen(
-                candidatas = candidatas
-            )
-            Pantalla.RANKING -> Pantalla.LISTADO
+    fun cerrarSesion() {
+        nombreSesion = ""
+        rolSesion = Rol.EVALUADORA
+        candidataId = -1L
+        pantalla = Pantalla.LOGIN
+    }
 
-            Pantalla.LISTADO -> Pantalla.LOGIN
-            Pantalla.LOGIN -> Pantalla.LOGIN
+    fun regresar() {
+        when (pantalla) {
+            Pantalla.FORMULARIO, Pantalla.DETALLE, Pantalla.RANKING -> pantalla = Pantalla.LISTADO
+            Pantalla.EVALUACION -> pantalla = Pantalla.DETALLE
+            Pantalla.LISTADO -> cerrarSesion()
+            Pantalla.LOGIN -> Unit
         }
     }
     BackHandler(enabled = pantalla != Pantalla.LOGIN) { regresar() }
@@ -91,10 +100,7 @@ fun WimApp(viewModel: WimViewModel) {
                 },
                 actions = {
                     if (pantalla == Pantalla.LISTADO) {
-                        TextButton(onClick = {
-                            nombreSesion = ""
-                            pantalla = Pantalla.LOGIN
-                        }) { Text("Salir") }
+                        TextButton(onClick = { cerrarSesion() }) { Text("Salir") }
                     }
                 }
             )
@@ -115,22 +121,63 @@ fun WimApp(viewModel: WimViewModel) {
                         usuario = nombreSesion,
                         rol = rolSesion,
                         onNueva = { pantalla = Pantalla.FORMULARIO },
+                        onRanking = { pantalla = Pantalla.RANKING },
                         onDetalle = { id ->
                             candidataId = id
                             pantalla = Pantalla.DETALLE
-                        },
-                        onRanking = { pantalla = Pantalla.RANKING }
+                        }
                     )
                     Pantalla.FORMULARIO -> FormularioScreen(
-                        onGuardar = { nombre, correo, area, experiencia, cv ->
-                            val error = viewModel.registrar(nombre, correo, area, experiencia, cv)
-                            if (error == null) pantalla = Pantalla.LISTADO
-                            else scope.launch { aviso.showSnackbar(error) }
+                        onGuardar = { nombre, correo, area, experiencia, telefono, cv ->
+                            scope.launch {
+                                val error = viewModel.registrar(nombre, correo, area, experiencia, telefono, cv)
+                                if (error == null) {
+                                    pantalla = Pantalla.LISTADO
+                                    aviso.showSnackbar("Candidata registrada")
+                                } else {
+                                    aviso.showSnackbar(error)
+                                }
+                            }
                         }
                     )
                     Pantalla.DETALLE -> DetalleScreen(
                         candidata = candidatas.firstOrNull { it.id == candidataId },
+                        evaluaciones = evaluaciones.filter { it.candidataId == candidataId },
+                        rol = rolSesion,
+                        onEvaluar = { pantalla = Pantalla.EVALUACION },
+                        onEliminar = {
+                            scope.launch {
+                                val error = viewModel.eliminar(candidataId)
+                                if (error == null) {
+                                    pantalla = Pantalla.LISTADO
+                                    aviso.showSnackbar("Candidata eliminada")
+                                } else {
+                                    aviso.showSnackbar(error)
+                                }
+                            }
+                        },
                         onError = { scope.launch { aviso.showSnackbar(it) } }
+                    )
+                    Pantalla.EVALUACION -> EvaluacionScreen(
+                        candidata = candidatas.firstOrNull { it.id == candidataId },
+                        onGuardar = { puntajes, comentario ->
+                            scope.launch {
+                                val error = viewModel.evaluar(candidataId, nombreSesion, puntajes, comentario)
+                                if (error == null) {
+                                    pantalla = Pantalla.DETALLE
+                                    aviso.showSnackbar("Evaluación guardada")
+                                } else {
+                                    aviso.showSnackbar(error)
+                                }
+                            }
+                        }
+                    )
+                    Pantalla.RANKING -> RankingScreen(
+                        ranking = ranking,
+                        onDetalle = { id ->
+                            candidataId = id
+                            pantalla = Pantalla.DETALLE
+                        }
                     )
                 }
             }
@@ -139,9 +186,9 @@ fun WimApp(viewModel: WimViewModel) {
 }
 
 @Composable
-private fun LoginScreen(onEntrar: (String, String) -> Unit) {
+private fun LoginScreen(onEntrar: (String, Rol) -> Unit) {
     var nombre by rememberSaveable { mutableStateOf("") }
-    var rol by rememberSaveable { mutableStateOf("Evaluadora") }
+    var rol by rememberSaveable { mutableStateOf(Rol.EVALUADORA) }
     var error by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("Sistema académico de candidaturas", style = MaterialTheme.typography.headlineSmall)
@@ -156,11 +203,16 @@ private fun LoginScreen(onEntrar: (String, String) -> Unit) {
             singleLine = true
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (rol == "Evaluadora") Button(onClick = { rol = "Evaluadora" }) { Text("Evaluadora") }
-            else OutlinedButton(onClick = { rol = "Evaluadora" }) { Text("Evaluadora") }
-            if (rol == "Dirección") Button(onClick = { rol = "Dirección" }) { Text("Dirección") }
-            else OutlinedButton(onClick = { rol = "Dirección" }) { Text("Dirección") }
+            Rol.entries.forEach { opcion ->
+                if (rol == opcion) Button(onClick = { rol = opcion }) { Text(opcion.etiqueta) }
+                else OutlinedButton(onClick = { rol = opcion }) { Text(opcion.etiqueta) }
+            }
         }
+        Text(
+            if (rol.puedeEvaluar) "Evaluadora: registra y evalúa candidatas."
+            else "Dirección: consulta el ranking y puede eliminar registros.",
+            style = MaterialTheme.typography.bodySmall
+        )
         Button(onClick = {
             if (nombre.trim().isNotBlank()) onEntrar(nombre.trim(), rol)
             else error = true
@@ -170,29 +222,22 @@ private fun LoginScreen(onEntrar: (String, String) -> Unit) {
 
 @Composable
 private fun ListadoScreen(
-    candidatas: List<Candidata>,
-    usuario: String,
-    rol: String,
-    onNueva: () -> Unit,
-    onDetalle: (Long) -> Unit,
-    onRanking: () -> Unit
+    candidatas: List<Candidata>, usuario: String, rol: Rol,
+    onNueva: () -> Unit, onRanking: () -> Unit, onDetalle: (Long) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("Bienvenido/a, $usuario", style = MaterialTheme.typography.titleLarge)
-        Text("Perfil: $rol | Registros: ${candidatas.size}")
-        Button(onClick = onNueva, modifier = Modifier.fillMaxWidth()) { Text("+ Registrar candidata") }
-        OutlinedButton(
-            onClick = onRanking,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Ver resultados y ranking")
+        Text("Perfil: ${rol.etiqueta} | Registros: ${candidatas.size}")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onNueva, modifier = Modifier.weight(1f)) { Text("+ Registrar") }
+            OutlinedButton(onClick = onRanking, modifier = Modifier.weight(1f)) { Text("Ranking") }
         }
         HorizontalDivider()
         if (candidatas.isEmpty()) {
             Text("No hay candidatas. Crea la primera con el botón superior.")
         }
-        Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            candidatas.forEach { candidata ->
+        LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            items(candidatas, key = { it.id }) { candidata ->
                 Card(onClick = { onDetalle(candidata.id) }, modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(16.dp)) {
                         Text(candidata.nombre, fontWeight = FontWeight.Bold)
@@ -206,12 +251,13 @@ private fun ListadoScreen(
 }
 
 @Composable
-private fun FormularioScreen(onGuardar: (String, String, String, String, String?) -> Unit) {
+private fun FormularioScreen(onGuardar: (String, String, String, String, String, String?) -> Unit) {
     val context = LocalContext.current
     var nombre by rememberSaveable { mutableStateOf("") }
     var correo by rememberSaveable { mutableStateOf("") }
     var area by rememberSaveable { mutableStateOf("") }
     var experiencia by rememberSaveable { mutableStateOf("") }
+    var telefono by rememberSaveable { mutableStateOf("") }
     var cvUri by rememberSaveable { mutableStateOf<String?>(null) }
     val errores = remember { mutableStateMapOf<String, String>() }
     val selectorPdf = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -252,29 +298,48 @@ private fun FormularioScreen(onGuardar: (String, String, String, String, String?
             isError = errores.containsKey("experiencia"), singleLine = true,
             supportingText = { errores["experiencia"]?.let { Text("⚠ $it") } }
         )
+        OutlinedTextField(
+            value = telefono, onValueChange = { telefono = it; errores.remove("telefono") },
+            label = { Text("Teléfono (opcional)") }, modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            isError = errores.containsKey("telefono"), singleLine = true,
+            supportingText = { errores["telefono"]?.let { Text("⚠ $it") } }
+        )
         OutlinedButton(onClick = { selectorPdf.launch(arrayOf("application/pdf")) }, modifier = Modifier.fillMaxWidth()) {
-            Text(if (cvUri == null) "Adjuntar CV PDF (opcional)" else "CV PDF seleccionado ✓")
+            Text(
+                cvUri?.let { "CV: ${nombreArchivo(context, it) ?: "PDF seleccionado"} ✓" }
+                    ?: "Adjuntar CV PDF (opcional)"
+            )
         }
         Button(onClick = {
             errores.clear()
-            errores.putAll(CandidataValidator.validar(nombre, correo, area, experiencia))
-            if (errores.isEmpty()) onGuardar(nombre, correo, area, experiencia, cvUri)
+            errores.putAll(CandidataValidator.validar(nombre, correo, area, experiencia, telefono))
+            if (errores.isEmpty()) onGuardar(nombre, correo, area, experiencia, telefono, cvUri)
         }, modifier = Modifier.fillMaxWidth()) { Text("Guardar candidata") }
         Spacer(Modifier.height(10.dp))
     }
 }
 
 @Composable
-private fun DetalleScreen(candidata: Candidata?, onError: (String) -> Unit) {
+private fun DetalleScreen(
+    candidata: Candidata?,
+    evaluaciones: List<Evaluacion>,
+    rol: Rol,
+    onEvaluar: () -> Unit,
+    onEliminar: () -> Unit,
+    onError: (String) -> Unit
+) {
     val context = LocalContext.current
+    var confirmarEliminar by rememberSaveable { mutableStateOf(false) }
     if (candidata == null) {
         Text("No se encontró esta candidata.")
         return
     }
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("Detalle de candidata", style = MaterialTheme.typography.headlineSmall)
         Text("Nombre: ${candidata.nombre}")
         Text("Correo: ${candidata.correo}")
+        Text("Teléfono: ${candidata.telefono ?: "No indicado"}")
         Text("Área: ${candidata.area}")
         Text("Experiencia: ${candidata.experiencia} años")
         if (candidata.cvUri != null) {
@@ -292,5 +357,42 @@ private fun DetalleScreen(candidata: Candidata?, onError: (String) -> Unit) {
                 }
             }) { Text("Abrir CV con otra app") }
         } else Text("No se adjuntó CV")
+
+        HorizontalDivider()
+        Text("Evaluaciones (${evaluaciones.size})", style = MaterialTheme.typography.titleMedium)
+        if (evaluaciones.isEmpty()) Text("Aún no tiene evaluaciones.")
+        evaluaciones.forEach { EvaluacionCard(it) }
+
+        if (rol.puedeEvaluar) {
+            Button(onClick = onEvaluar, modifier = Modifier.fillMaxWidth()) { Text("Evaluar candidata") }
+        }
+        if (rol.puedeEliminar) {
+            OutlinedButton(onClick = { confirmarEliminar = true }, modifier = Modifier.fillMaxWidth()) {
+                Text("Eliminar candidata")
+            }
+        }
+        Spacer(Modifier.height(10.dp))
     }
+    if (confirmarEliminar) {
+        AlertDialog(
+            onDismissRequest = { confirmarEliminar = false },
+            title = { Text("Eliminar candidata") },
+            text = { Text("Se borrarán también sus evaluaciones. Esta acción no se puede deshacer.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmarEliminar = false
+                    onEliminar()
+                }) { Text("Eliminar") }
+            },
+            dismissButton = { TextButton(onClick = { confirmarEliminar = false }) { Text("Cancelar") } }
+        )
+    }
+}
+
+/** Nombre visible del archivo elegido, o null si el proveedor no lo informa. */
+private fun nombreArchivo(context: Context, uri: String): String? = try {
+    context.contentResolver.query(Uri.parse(uri), arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+        ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+} catch (_: Exception) {
+    null
 }
