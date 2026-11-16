@@ -74,4 +74,13 @@ dependencies {
     debugImplementation(
         libs.androidx.compose.ui.tooling
     )
+
+    // Consumo de APIs (microservicio propio y API externa)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp.logging)
+
+    // Pruebas unitarias
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
