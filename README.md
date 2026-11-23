@@ -81,12 +81,12 @@ URL base: `ApiConfig.BASE_URL` en `data/remote/RetrofitClient.kt`.
 | Método | Ruta | Uso en la app | Respuestas |
 |---|---|---|---|
 | POST | `/api/auth/login` | Iniciar sesión | 200 · 401 |
-| GET | `/api/Candidatas` | Listar | 200 |
-| GET | `/api/Candidatas/{id}` | Ver detalle | 200 · 404 |
-| POST | `/api/Candidatas` | Registrar | 201 · 400 · 409 |
-| PUT | `/api/Candidatas/{id}` | Editar | 200 · 400 · 404 · 409 |
-| PATCH | `/api/Candidatas/{id}/estado` | Cambiar estado al evaluar o resolver | 200 · 404 |
-| DELETE | `/api/Candidatas/{id}` | Eliminar | 204 · 404 |
+| GET | `/api/postulantes` | Listar | 200 |
+| GET | `/api/postulantes/{id}` | Ver detalle | 200 · 404 |
+| POST | `/api/postulantes` | Registrar | 201 · 400 · 409 |
+| PUT | `/api/postulantes/{id}` | Editar | 200 · 400 · 404 · 409 |
+| PATCH | `/api/postulantes/{id}/estado` | Cambiar estado al evaluar o resolver | 200 · 404 |
+| DELETE | `/api/postulantes/{id}` | Eliminar | 204 · 404 |
 
 ### API externa
 | Método | URL | Uso |
@@ -117,7 +117,7 @@ cd wim100-backend
 $env:SPRING_DATASOURCE_PASSWORD="tu_clave_de_mysql"
 .\mvnw.cmd spring-boot:run
 ```
-Cuando aparezca `Started ... on port 8080`, abre `http://localhost:8080/api/Candidatas`: deben salir 3 candidatas en JSON.
+Cuando aparezca `Started ... on port 8080`, abre `http://localhost:8080/api/postulantes`: deben salir 3 candidatas en JSON.
 
 ### 2. Ejecutar la app en el emulador
 1. Clona este repositorio y ábrelo en Android Studio.
@@ -129,7 +129,7 @@ Cuando aparezca `Started ... on port 8080`, abre `http://localhost:8080/api/Cand
 2. Busca la IP del computador con `ipconfig` (dato "Dirección IPv4").
 3. En `data/remote/RetrofitClient.kt`, cambia `BASE_URL` a `"http://TU_IP:8080/api/"` (con la barra final).
 4. Permite Java en el firewall de Windows para redes privadas.
-5. Comprueba desde el navegador del teléfono que `http://TU_IP:8080/api/Candidatas` responde.
+5. Comprueba desde el navegador del teléfono que `http://TU_IP:8080/api/postulantes` responde.
 
 ### Usuarios de prueba
 | Usuario | Contraseña | Rol |
