@@ -12,22 +12,22 @@ import retrofit2.http.Path
 /** Microservicio propio wim100-backend. */
 interface WimApi {
 
-    @GET("Candidatas")
+    @GET("postulantes")
     suspend fun listar(): List<PostulanteDto>
 
-    @GET("Candidatas/{id}")
+    @GET("postulantes/{id}")
     suspend fun obtener(@Path("id") id: Long): PostulanteDto
 
-    @POST("Candidatas")
+    @POST("postulantes")
     suspend fun crear(@Body body: PostulanteDto): PostulanteDto
 
-    @PUT("Candidatas/{id}")
+    @PUT("postulantes/{id}")
     suspend fun actualizar(@Path("id") id: Long, @Body body: PostulanteDto): PostulanteDto
 
-    @PATCH("Candidatas/{id}/estado")
+    @PATCH("postulantes/{id}/estado")
     suspend fun cambiarEstado(@Path("id") id: Long, @Body body: EstadoRequest): PostulanteDto
 
-    @DELETE("Candidatas/{id}")
+    @DELETE("postulantes/{id}")
     suspend fun eliminar(@Path("id") id: Long): Response<Unit>
 
     @POST("auth/login")
