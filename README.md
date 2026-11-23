@@ -1,66 +1,136 @@
-# 📱 WIM 100 — Aplicación de Evaluación de Candidatas
+# 📱 WIM 100 – Aplicación de Evaluación de Candidatas
 
-**Duoc UC · DSY1105 · Desarrollo de Aplicaciones Móviles**
+## 📌 Descripción del proyecto
 
-Proyecto académico de **Ángel González, Roselín Verdu y Andrés Albornoz**. La aplicación permite gestionar candidatas ficticias para un programa de selección, con interfaz en **Kotlin, Jetpack Compose y Material Design 3**.
+WIM 100 es un proyecto académico desarrollado para la asignatura **Desarrollo de Aplicaciones Móviles (DSY1105)** de Duoc UC.
 
-> **Estado: versión inicial 0.1.0.** Es un primer incremento funcional para el primer commit del equipo, **no** la versión final de las evaluaciones EP2/EP3. Toda la información de prueba es ficticia.
+La aplicación busca facilitar el registro, evaluación y seguimiento de candidatas de un programa de selección, mediante una interfaz móvil sencilla, organizada e intuitiva.
 
-## ✅ Funciones de esta versión (primer commit)
+El objetivo es aplicar los conocimientos adquiridos durante el semestre, priorizando la funcionalidad, la facilidad de uso y la organización del código.
 
-- Inicio de sesión **demostrativo** con nombre y selección de rol (Evaluadora o Dirección; sin autenticación real).
-- Listado de candidatas; opción para agregar y abrir el detalle.
-- Formulario: nombre y apellido, correo, área y años de experiencia.
-- Validación de campos y mensajes visibles; bloqueo de correos duplicados.
-- **Persistencia local** mediante `SharedPreferences` + JSON: los registros permanecen al cerrar y volver a abrir.
-- Recurso nativo: selector de PDF del sistema Android para adjuntar CV; opción de abrirlo con otra aplicación.
-- Animación sencilla de transición entre pantallas mediante `Crossfade`.
-- Gestión de estado con `StateFlow` en un `ViewModel`.
-- Pruebas unitarias de las reglas del formulario.
+## 🎯 Objetivo general
 
-## 🛠 Tecnologías
+Desarrollar una aplicación móvil Android que permita gestionar candidaturas y evaluaciones, utilizando Kotlin, Jetpack Compose y almacenamiento local.
 
-Kotlin · Jetpack Compose · Material 3 · MVVM básico · StateFlow · SharedPreferences · Gradle · Git/GitHub · Trello.
+## 🚀 Funcionalidades del proyecto
 
-**Pendiente para siguientes commits:** migración a Room, evaluación por criterios, ranking, historial, más pruebas y mejoras de diseño. **No afirmamos** que esas funciones estén ya implementadas.
+- Registro y consulta de candidatas.
+- Formularios con validación de datos.
+- Navegación entre las diferentes pantallas.
+- Evaluación de candidatas mediante puntajes.
+- Visualización de resultados.
+- Gestión de información mediante almacenamiento local.
+- Perfiles de Evaluadora y Dirección.
+- Integración de recursos nativos del dispositivo.
+- Interfaz diseñada con Material Design 3.
 
-## ▶️ Ejecutar en Android Studio / IntelliJ IDEA con soporte Android
+**Estado:** proyecto académico en desarrollo y validación funcional.
 
-1. Clona el repositorio o descomprime el ZIP.
-2. Abre en el IDE la **carpeta raíz que contiene `settings.gradle.kts` y `gradlew.bat`**, no la subcarpeta `app`.
-3. Instala JDK 21 y el Android SDK solicitado por Gradle (versión 36.1 según configuración original del equipo).
-4. Haz **Sync Project with Gradle Files** con conexión a internet en la primera sincronización.
-5. Inicia un emulador (Android API 26+ recomendado) o conecta un dispositivo con depuración USB.
-6. Selecciona **app**, presiona **Run**.
-7. En Windows, para las pruebas unitarias: `gradlew.bat testDebugUnitTest`.
+## 🛠️ Tecnologías del proyecto
 
-## 🧪 Prueba manual del primer incremento
+| Tecnología | Utilidad |
+|---|---|
+| Kotlin | Lenguaje de programación |
+| Jetpack Compose | Desarrollo de interfaces |
+| Material Design 3 | Diseño visual |
+| MVVM | Organización de la aplicación |
+| Room / SQLite | Almacenamiento local |
+| Gradle | Gestión de dependencias |
+| Git y GitHub | Control de versiones |
+| Trello | Organización de tareas |
 
-1. Ingresa con el nombre `Ángel González` y rol Evaluadora.
-2. En **Registrar candidata**, prueba primero guardar con campos vacíos: aparecerán mensajes de error.
-3. Registra: `Camila Torres`, `camila@ejemplo.cl`, `Desarrollo`, `2`.
-4. Selecciona opcionalmente un PDF del teléfono y guarda.
-5. Abre el detalle de Camila y comprueba sus datos (y el PDF si se adjuntó).
-6. Cierra la app y vuelve a abrir: el registro debe continuar en el listado.
-7. Repite el mismo correo: el registro duplicado debe rechazarse.
+## 🏗️ Arquitectura
 
-## 🗂 Estructura del código
+El proyecto está organizado siguiendo los principios del patrón MVVM.
 
-```text
-app/src/main/java/com/example/myapplication/
-├── MainActivity.kt
-├── model/Candidata.kt                   # Modelo
-├── validation/CandidataValidator.kt    # Reglas puras
-├── data/CandidataRepository.kt         # Guardar y recuperar datos locales
-├── ui/viewmodel/WimViewModel.kt        # Estado y coordinación
-├── ui/WimApp.kt                        # Pantallas y navegación simple
-└── ui/theme/                            # Material 3
-```
+- **Model:** representa los datos de la aplicación.
+- **View:** contiene las pantallas e interfaces.
+- **ViewModel:** administra los estados y la lógica de presentación.
+- **Repository:** organiza el acceso a los datos.
 
-## 👥 Equipo y seguimiento
+Esta separación facilita la comprensión y el mantenimiento del código.
 
-**Integrantes:** Ángel González · Roselín Verdu · Andrés Albornoz. Cada historia posterior debe tener asignado un responsable real, un commit identificable, evidencia de pruebas y una tarjeta Trello.
+## 💻 Cómo ejecutar el proyecto
 
-Consulta [`docs/PRIMER_COMMIT.md`](docs/PRIMER_COMMIT.md) para subir esta versión sin sobrescribir el trabajo de otros, y [`docs/TRELLO_SECUENCIA.md`](docs/TRELLO_SECUENCIA.md) para los siguientes incrementos.
+1. Descargar o clonar este repositorio.
+2. Abrir la carpeta del proyecto Android en Android Studio o en IntelliJ IDEA con soporte Android configurado.
+3. Configurar el Android SDK.
+4. Sincronizar las dependencias mediante Gradle.
+5. Seleccionar un emulador Android o conectar un dispositivo físico.
+6. Ejecutar el módulo `app`.
 
-**Nota:** antes de calificar el proyecto como operativo para la defensa, es indispensable compilarlo y ejecutarlo en Android Studio; esta entrega no incluye un APK certificado ni pruebas instrumentadas en emulador.
+## 👥 Integrantes
+
+**Equipo de desarrollo:**
+
+- Ángel González
+- Andrés Albornoz
+- Roselín Verdu
+
+**Institución:** Duoc UC  
+**Asignatura:** Desarrollo de Aplicaciones Móviles  
+**Código:** DSY1105
+
+## 📚 Contexto académico
+
+El proyecto forma parte de las evaluaciones parciales del semestre y constituye un avance para la Evaluación Final Transversal (EFT).
+
+Se busca demostrar conocimientos en diseño visual, programación Kotlin, navegación, gestión de estados, persistencia local y recursos nativos.
+
+## 📈 Mejoras futuras
+
+- Fortalecer las pruebas funcionales.
+- Mejorar las animaciones y la experiencia visual.
+- Optimizar las validaciones.
+- Incorporar las observaciones recibidas durante la defensa.
+
+---
+
+**Proyecto académico desarrollado con fines educativos – Duoc UC, 2026.**
+
+---
+
+## 🔌 Conexión con backend (EP4)
+
+La app es **híbrida**: postulantes y login viven en el microservicio `wim100-backend` (Spring Boot + MySQL);
+evaluaciones, criterios e historial siguen en Room, que además guarda una copia local de los postulantes.
+
+- Backend: https://github.com/Andres-albornoz/wim100-backend
+- API externa: [randomuser.me](https://randomuser.me) (solo genera un nombre ficticio en el formulario).
+
+### Endpoints consumidos (`ApiConfig.BASE_URL = http://10.0.2.2:8080/api/`)
+| Método | Ruta | Uso |
+|---|---|---|
+| GET | /postulantes | Listar |
+| POST | /postulantes | Registrar |
+| PUT | /postulantes/{id} | Editar |
+| PATCH | /postulantes/{id}/estado | Estado tras evaluar / resolver |
+| DELETE | /postulantes/{id} | Eliminar |
+| POST | /auth/login | Iniciar sesión |
+
+### Cómo ejecutar (backend primero)
+1. Levantar MySQL y el backend (`./mvnw spring-boot:run` en `wim100-backend`).
+2. Abrir esta app en Android Studio y ejecutarla en el emulador.
+3. Ingresar con `evaluadora1` / `wim2026` (rol Evaluadora) o `direccion` / `wim2026` (rol Dirección).
+4. En un teléfono físico, cambiar `BASE_URL` por la IP del computador (misma Wi-Fi, puerto 8080 abierto).
+
+### Recursos nativos
+| Recurso | Dónde | Cómo |
+|---|---|---|
+| Selector de documentos (PDF) | Formulario → *Adjuntar CV en PDF* | `ActivityResultContracts.OpenDocument` + permiso de lectura persistente |
+| Visor de PDF | Detalle → *Abrir CV* | `Intent.ACTION_VIEW` |
+| Teléfono | Detalle → *Llamar* | `Intent.ACTION_DIAL` (no pide permiso de llamada) |
+| Correo | Detalle → *Correo* | `Intent.ACTION_SENDTO` con `mailto:` |
+
+El PDF queda en el teléfono: al servidor solo viaja su nombre (`cvNombre`).
+
+### Ranking
+Botón de ranking en el listado. Se calcula en vivo desde Room con el puntaje ponderado (0 a 100) y destaca el primer lugar.
+En empate gana la evaluación completa y luego la candidata registrada antes.
+
+### Pruebas unitarias (MockK)
+`./gradlew testDebugUnitTest` → 30 pruebas de repositorios, ViewModels, validadores, cálculo de puntaje y ranking.
+
+### APK firmado
+`release/app-release.apk`, firmado con `keystore/wim100.jks` (alias `wim100`) mediante `signingConfigs` en `app/build.gradle.kts`.
+El `.jks` y sus contraseñas se incluyen solo porque la evaluación lo exige; en un proyecto real nunca se suben a un repositorio.
