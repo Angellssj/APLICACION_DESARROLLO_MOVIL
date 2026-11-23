@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +37,7 @@ fun CandidatasScreen(
     sesion: Sesion,
     onNueva: () -> Unit,
     onDetalle: (Long) -> Unit,
+    onRanking: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
     val candidatas by viewModel.candidatas.collectAsStateWithLifecycle()
@@ -46,6 +48,9 @@ fun CandidatasScreen(
             TopAppBar(
                 title = { Text("Candidatas · ${sesion.rol.etiqueta}") },
                 actions = {
+                    IconButton(onClick = onRanking) {
+                        Icon(Icons.Filled.Leaderboard, contentDescription = "Ranking")
+                    }
                     IconButton(onClick = viewModel::refrescar) {
                         Icon(Icons.Filled.Refresh, contentDescription = "Actualizar")
                     }

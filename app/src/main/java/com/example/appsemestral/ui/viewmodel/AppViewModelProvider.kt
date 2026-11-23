@@ -37,6 +37,9 @@ object AppViewModelProvider {
             )
         }
         initializer {
+            RankingViewModel(app().container.candidataRepository, app().container.evaluacionRepository)
+        }
+        initializer {
             EvaluacionViewModel(
                 createSavedStateHandle(),
                 app().container.candidataRepository,

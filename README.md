@@ -114,8 +114,22 @@ evaluaciones, criterios e historial siguen en Room, que además guarda una copia
 3. Ingresar con `evaluadora1` / `wim2026` (rol Evaluadora) o `direccion` / `wim2026` (rol Dirección).
 4. En un teléfono físico, cambiar `BASE_URL` por la IP del computador (misma Wi-Fi, puerto 8080 abierto).
 
+### Recursos nativos
+| Recurso | Dónde | Cómo |
+|---|---|---|
+| Selector de documentos (PDF) | Formulario → *Adjuntar CV en PDF* | `ActivityResultContracts.OpenDocument` + permiso de lectura persistente |
+| Visor de PDF | Detalle → *Abrir CV* | `Intent.ACTION_VIEW` |
+| Teléfono | Detalle → *Llamar* | `Intent.ACTION_DIAL` (no pide permiso de llamada) |
+| Correo | Detalle → *Correo* | `Intent.ACTION_SENDTO` con `mailto:` |
+
+El PDF queda en el teléfono: al servidor solo viaja su nombre (`cvNombre`).
+
+### Ranking
+Botón de ranking en el listado. Se calcula en vivo desde Room con el puntaje ponderado (0 a 100) y destaca el primer lugar.
+En empate gana la evaluación completa y luego la candidata registrada antes.
+
 ### Pruebas unitarias (MockK)
-`./gradlew testDebugUnitTest` → 26 pruebas de repositorios, ViewModels, validadores y cálculo de puntaje.
+`./gradlew testDebugUnitTest` → 30 pruebas de repositorios, ViewModels, validadores, cálculo de puntaje y ranking.
 
 ### APK firmado
 `release/app-release.apk`, firmado con `keystore/wim100.jks` (alias `wim100`) mediante `signingConfigs` en `app/build.gradle.kts`.

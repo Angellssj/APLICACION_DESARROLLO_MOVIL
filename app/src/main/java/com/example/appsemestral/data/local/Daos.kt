@@ -64,6 +64,9 @@ interface EvaluacionDao {
     @Query("SELECT * FROM evaluaciones WHERE candidataId = :candidataId")
     fun observarPorCandidata(candidataId: Long): Flow<List<Evaluacion>>
 
+    @Query("SELECT * FROM evaluaciones")
+    fun observarTodas(): Flow<List<Evaluacion>>
+
     @Query("SELECT * FROM evaluaciones WHERE candidataId = :candidataId")
     suspend fun obtenerPorCandidata(candidataId: Long): List<Evaluacion>
 

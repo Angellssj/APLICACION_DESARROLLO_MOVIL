@@ -9,6 +9,7 @@ object Rutas {
     const val EDITAR = "editar-candidata/{$ARG_ID}"
     const val DETALLE = "candidata/{$ARG_ID}"
     const val EVALUAR = "evaluar/{$ARG_ID}"
+    const val RANKING = "ranking"
 
     fun editar(id: Long) = "editar-candidata/$id"
     fun detalle(id: Long) = "candidata/$id"

@@ -117,3 +117,39 @@ object CalculadoraPuntaje {
     fun estaCompleta(criterios: List<Criterio>, evaluaciones: List<Evaluacion>): Boolean =
         criterios.isNotEmpty() && criterios.all { c -> evaluaciones.any { it.criterioId == c.id } }
 }
+
+/** Una fila del ranking: candidata, su puntaje y si ya tiene todos los criterios evaluados. */
+data class FilaRanking(
+    val candidata: Candidata,
+    val puntaje: Double,
+    val completa: Boolean
+)
+
+object Ranking {
+    /**
+     * Ordena de mayor a menor puntaje a las candidatas que tienen al menos una evaluación.
+     * En empate gana la evaluación completa y luego la que se registró primero.
+     */
+    fun calcular(
+        candidatas: List<Candidata>,
+        criterios: List<Criterio>,
+        evaluaciones: List<Evaluacion>
+    ): List<FilaRanking> {
+        val porCandidata = evaluaciones.groupBy { it.candidataId }
+        return candidatas
+            .filter { porCandidata[it.id].orEmpty().isNotEmpty() }
+            .map { c ->
+                val propias = porCandidata.getValue(c.id)
+                FilaRanking(
+                    candidata = c,
+                    puntaje = CalculadoraPuntaje.total(criterios, propias),
+                    completa = CalculadoraPuntaje.estaCompleta(criterios, propias)
+                )
+            }
+            .sortedWith(
+                compareByDescending<FilaRanking> { it.puntaje }
+                    .thenByDescending { it.completa }
+                    .thenBy { it.candidata.fechaRegistro }
+            )
+    }
+}

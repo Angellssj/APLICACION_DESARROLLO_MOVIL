@@ -79,7 +79,9 @@ class CandidataFormViewModel(
     fun onResumen(v: String) = _ui.update { it.copy(resumen = it.resumen.con(v, CandidataValidator.resumen(v))) }
     fun onLinkedin(v: String) = _ui.update { it.copy(linkedin = it.linkedin.con(v, CandidataValidator.linkedin(v))) }
     fun onArea(v: String) = _ui.update { it.copy(area = v, areaError = null) }
-    fun onCvNombre(v: String) = _ui.update { it.copy(cvNombre = v.ifBlank { null }) }
+    /** RECURSO NATIVO: el PDF llega desde el selector de documentos de Android. */
+    fun onCvSeleccionado(uri: String, nombre: String) = _ui.update { it.copy(cvUri = uri, cvNombre = nombre) }
+    fun quitarCv() = _ui.update { it.copy(cvUri = null, cvNombre = null) }
     fun mensajeLeido() = _ui.update { it.copy(mensaje = null) }
 
     fun validarTodo(): Boolean {

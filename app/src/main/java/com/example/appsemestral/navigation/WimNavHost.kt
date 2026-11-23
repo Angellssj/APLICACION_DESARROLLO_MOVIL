@@ -14,6 +14,7 @@ import com.example.appsemestral.ui.screens.CandidatasScreen
 import com.example.appsemestral.ui.screens.DetalleCandidataScreen
 import com.example.appsemestral.ui.screens.EvaluacionScreen
 import com.example.appsemestral.ui.screens.LoginScreen
+import com.example.appsemestral.ui.screens.RankingScreen
 import com.example.appsemestral.ui.viewmodel.AppViewModelProvider
 import com.example.appsemestral.ui.viewmodel.SesionViewModel
 
@@ -37,6 +38,7 @@ fun WimNavHost(mostrarMensaje: (String) -> Unit) {
                     sesion = s,
                     onNueva = { navController.navigate(Rutas.NUEVA) },
                     onDetalle = { id -> navController.navigate(Rutas.detalle(id)) },
+                    onRanking = { navController.navigate(Rutas.RANKING) },
                     onCerrarSesion = {
                         sesionVm.cerrarSesion()
                         navController.navigate(Rutas.LOGIN) { popUpTo(0) }
@@ -75,6 +77,13 @@ fun WimNavHost(mostrarMensaje: (String) -> Unit) {
                     mostrarMensaje = mostrarMensaje
                 )
             }
+        }
+        composable(Rutas.RANKING) {
+            RankingScreen(
+                viewModel = viewModel(factory = AppViewModelProvider.Factory),
+                onVolver = { navController.popBackStack() },
+                onDetalle = { id -> navController.navigate(Rutas.detalle(id)) }
+            )
         }
         composable(Rutas.EVALUAR, arguments = argumentoId) {
             sesion?.let { s ->

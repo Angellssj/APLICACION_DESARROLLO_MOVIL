@@ -19,6 +19,9 @@ class EvaluacionRepository(
     fun observarEvaluaciones(candidataId: Long): Flow<List<Evaluacion>> =
         db.evaluacionDao().observarPorCandidata(candidataId)
 
+    /** Todas las evaluaciones, para armar el ranking. */
+    fun observarTodasLasEvaluaciones(): Flow<List<Evaluacion>> = db.evaluacionDao().observarTodas()
+
     suspend fun asegurarCriterios(criterios: List<Criterio>) {
         db.criterioDao().insertarTodos(criterios)
     }
