@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -32,7 +34,9 @@ class MainActivity : ComponentActivity() {
                 val scope = rememberCoroutineScope()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    snackbarHost = { SnackbarHost(snackbar) }
+                    // Cada pantalla maneja sus márgenes de sistema (barra de estado y de navegación)
+                    contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                    snackbarHost = { SnackbarHost(snackbar, Modifier.navigationBarsPadding()) }
                 ) { innerPadding ->
                     androidx.compose.foundation.layout.Box(Modifier.padding(innerPadding)) {
                         WimNavHost(mostrarMensaje = { msg -> scope.launch { snackbar.showSnackbar(msg) } })

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logo WIM 100: escudo (ciberseguridad) + W (Women In cyber) + nodo (la mentorada dentro de la red). Diseño original. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Escudo -->
+    <path
+        android:fillColor="#0F2342"
+        android:pathData="M60,6 L104,21 L104,55 C104,84 86,103 60,114 C34,103 16,84 16,55 L16,21 Z" />
+    <!-- Mitad izquierda más clara para dar volumen -->
+    <path
+        android:fillColor="#1E3A66"
+        android:pathData="M60,6 L16,21 L16,55 C16,84 34,103 60,114 Z" />
+    <!-- Filete interior turquesa -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#12A8A0"
+        android:strokeAlpha="0.55"
+        android:strokeWidth="2"
+        android:pathData="M60,14 L96,26.5 L96,55 C96,79 81,95 60,104.5 C39,95 24,79 24,55 L24,26.5 Z" />
+    <!-- W -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="7.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M36,50 L46.5,82 L60,60 L73.5,82 L84,50" />
+    <!-- Nodo -->
+    <path
+        android:fillColor="#12A8A0"
+        android:pathData="M53.5,38 a6.5,6.5 0 1,0 13,0 a6.5,6.5 0 1,0 -13,0 Z" />
+</vector>
