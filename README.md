@@ -101,11 +101,11 @@ evaluaciones, criterios e historial siguen en Room, que además guarda una copia
 ### Endpoints consumidos (`ApiConfig.BASE_URL = http://10.0.2.2:8080/api/`)
 | Método | Ruta | Uso |
 |---|---|---|
-| GET | /postulantes | Listar |
-| POST | /postulantes | Registrar |
-| PUT | /postulantes/{id} | Editar |
-| PATCH | /postulantes/{id}/estado | Estado tras evaluar / resolver |
-| DELETE | /postulantes/{id} | Eliminar |
+| GET | /Candidatas | Listar |
+| POST | /Candidatas | Registrar |
+| PUT | /Candidatas/{id} | Editar |
+| PATCH | /Candidatas/{id}/estado | Estado tras evaluar / resolver |
+| DELETE | /Candidatas/{id} | Eliminar |
 | POST | /auth/login | Iniciar sesión |
 
 ### Cómo ejecutar (backend primero)
