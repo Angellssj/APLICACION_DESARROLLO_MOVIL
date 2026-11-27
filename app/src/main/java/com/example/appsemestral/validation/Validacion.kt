@@ -70,6 +70,8 @@ object CandidataValidator {
     fun linkedin(v: String): ValidationResult = when {
         v.isBlank() -> ValidationResult.error("El enlace al perfil es obligatorio")
         !v.trim().startsWith("https://") -> ValidationResult.error("Debe comenzar con https://")
+        // La columna del backend admite 200; los enlaces compartidos traen "?utm_..." y se pasan.
+        v.trim().length > 200 -> ValidationResult.error("Máximo 200 caracteres (borra lo que va después de \"?\")")
         else -> ValidationResult.Valido
     }
 }

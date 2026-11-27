@@ -10,9 +10,10 @@ object ApiConfig {
     /**
      * Emulador: 10.0.2.2 es el "localhost" del computador.
      * Dispositivo físico: usa la IP del computador en la red Wi-Fi, ej. http://192.168.1.50:8080/api/
+     * Fuera de la red local: URL del túnel de Cloudflare (cambia cada vez que se reinicia el túnel).
      * La URL SIEMPRE termina en "/".
      */
-    const val BASE_URL = "http://10.0.2.2:8080/api/"
+    const val BASE_URL = "https://noble-joel-kay-auction.trycloudflare.com/api/"
     const val RANDOM_USER_URL = "https://randomuser.me/"
 }
 
