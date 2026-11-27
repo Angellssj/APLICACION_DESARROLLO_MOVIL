@@ -47,4 +47,11 @@ class CandidataValidatorTest {
         assertFalse(CandidataValidator.linkedin("http://x.com").esValido)
         assertTrue(CandidataValidator.linkedin("https://www.linkedin.com/in/ana").esValido)
     }
+
+    @Test
+    fun `linkedin no puede superar 200 caracteres`() {
+        val base = "https://www.linkedin.com/in/ana"
+        assertTrue(CandidataValidator.linkedin(base + "a".repeat(200 - base.length)).esValido)
+        assertFalse(CandidataValidator.linkedin(base + "a".repeat(201 - base.length)).esValido)
+    }
 }
